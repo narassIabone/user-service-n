@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15
+    container_name: user-service-db-container
+    environment:
+      POSTGRES_DB: user_db
+      POSTGRES_USER: user_admin
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres/init/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_data:/var/lib/postgresql/data
+    # Добавляем проверку готовности базы, чтобы мигратор не упал при старте
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user_admin -d user_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  db-migrator:
+    image: user-service-db
+    container_name: user-service-migrator
+    depends_on:
+      postgres:
+        condition: service_healthy # Ждет, пока база пройдет healthcheck
+    environment:
+      - DB_URL=jdbc:postgresql://postgres:5432/user_db
+      - DB_SCHEMA=us
+      - DB_LOGIN=user_admin
+      - DB_PASSWORD=password
+      - CHANGELOG_FILE=db/changelog/db.changelog-master.xml
+      - LB_LOG_LEVEL=INFO
+
+volumes:
+  postgres_data:
