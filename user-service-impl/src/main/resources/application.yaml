@@ -1,0 +1,24 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
+  datasource:
+    url: jdbc:postgresql://localhost:5432/user_db?currentSchema=us
+    username: user_admin
+    password: password
+    driver-class-name: org.postgresql.Driver
+    jpa:
+      hibernate:
+        format_sql: true
+        highlight_sql: true
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+
+jwt:
+  secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
