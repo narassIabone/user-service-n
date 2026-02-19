@@ -6,18 +6,14 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import ru.cinimex.userservice.dto.CodeConfirmDto;
-import ru.cinimex.userservice.dto.LoginRequestDto;
-import ru.cinimex.userservice.dto.UserRegisterDto;
-
-import java.util.UUID;
+import ru.cinimex.userservice.dto.*;
 
 @Tag(name = "Аутентификация", description = "Методы для регистрации и входа")
 public interface AuthControllerApi {
 
     @Operation(summary = "Регистрация нового пользователя")
     @PostMapping("/register")
-    ResponseEntity<UUID> register(@Valid @RequestBody UserRegisterDto dto);
+    ResponseEntity<UserIdResponseDto> register(@Valid @RequestBody UserRegisterDto dto);
 
     @Operation(summary = "Подтверждение почты кодом")
     @PostMapping("/register/code")
@@ -25,5 +21,5 @@ public interface AuthControllerApi {
 
     @Operation(summary = "Аутентификация (вход)")
     @PostMapping("/auth/login")
-    ResponseEntity<String> login(@Valid @RequestBody LoginRequestDto dto);
+    ResponseEntity<JwtResponseDto> login(@Valid @RequestBody LoginRequestDto dto);
 }

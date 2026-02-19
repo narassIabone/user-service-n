@@ -63,7 +63,7 @@ public class AuthService {
                     .body("Ваш код подтверждения - " + result.code())
                     .build();
 
-            //kafkaTemplate.send("notification.message.in", notification);
+            kafkaTemplate.send("notification.message.in", notification);
             return result.userId();
         }
 

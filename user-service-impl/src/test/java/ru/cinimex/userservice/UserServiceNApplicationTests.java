@@ -1,4 +1,4 @@
-package ru.cinimex.userservicen;
+package ru.cinimex.userservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

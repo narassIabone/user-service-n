@@ -10,6 +10,8 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import ru.cinimex.userservice.dto.NotificationDto;
+import org.apache.kafka.clients.admin.NewTopic;
+import org.springframework.kafka.config.TopicBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +21,14 @@ public class KafkaConfig {
 
     @Value("${spring.kafka.bootstrap-servers:localhost:9092}")
     private String bootstrapServers;
+
+    @Bean
+    public NewTopic registrationTopic() {
+        return TopicBuilder.name("notification.message.in")
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
 
     @Bean
     public ProducerFactory<String, NotificationDto> producerFactory() {

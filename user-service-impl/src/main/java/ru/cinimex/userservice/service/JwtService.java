@@ -3,7 +3,6 @@ package ru.cinimex.userservice.service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-//@RequiredArgsConstructor
 @Component
 public class JwtService {
 
@@ -35,7 +33,7 @@ public class JwtService {
                     .claims(claims)
                     .subject(user.getUsername())
                     .issuedAt(new Date(System.currentTimeMillis()))
-                    .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 3))
+                    .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                     .signWith(getSignKey(), Jwts.SIG.HS256).compact();
         }
         throw new IllegalArgumentException("Incorrect type of authentication principal");
@@ -84,5 +82,17 @@ public class JwtService {
     public List<String> extractRole(String token) {
         return extractClaim(token,
                 claims -> claims.get("roles", List.class));
+    }
+
+    public String generateTestToken(String username, String role, OffsetDateTime expiredDate) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("roles", List.of(role));
+        return Jwts.builder()
+                .claims(claims)
+                .subject(username)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(Date.from(expiredDate.toInstant()))
+                .signWith(getSignKey(), Jwts.SIG.HS256)
+                .compact();
     }
 }
