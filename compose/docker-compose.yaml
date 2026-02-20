@@ -1,4 +1,6 @@
 version: '3.8'
+name: user-service
+
 services:
   user-service:
     build:
@@ -6,72 +8,31 @@ services:
       dockerfile: Dockerfile
     container_name: user-service-app
     depends_on:
-      postgres:
-        condition: service_healthy
       db-migrator:
         condition: service_completed_successfully
     ports:
       - "8080:8080"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/user_db?currentSchema=us
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/common_db?currentSchema=us
       - SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA=us
       - SPRING_DATASOURCE_USERNAME=user_admin
       - SPRING_DATASOURCE_PASSWORD=password
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
-
-  postgres:
-    image: postgres:15
-    container_name: user-service-db-container
-    environment:
-      POSTGRES_DB: user_db
-      POSTGRES_USER: user_admin
-      POSTGRES_PASSWORD: password
-    ports:
-      - "5432:5432"
-    volumes:
-      - ./postgres/init/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user_admin -d user_db"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+    networks:
+      - backend-net
 
   db-migrator:
     image: user-service-db
     container_name: user-service-migrator
-    depends_on:
-      postgres:
-        condition: service_healthy
     environment:
-      - DB_URL=jdbc:postgresql://postgres:5432/user_db
+      - DB_URL=jdbc:postgresql://postgres:5432/common_db
       - DB_SCHEMA=us
       - DB_LOGIN=user_admin
       - DB_PASSWORD=password
       - CHANGELOG_FILE=db/changelog/db.changelog-master.xml
-      - LB_LOG_LEVEL=INFO
+    networks:
+      - backend-net
 
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.4.0
-    container_name: user-service-zookeeper
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-
-  kafka:
-    image: confluentinc/cp-kafka:7.4.0
-    container_name: user-service-kafka
-    depends_on:
-      - zookeeper
-    ports:
-      - "9092:9092"
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092, CONTROLLER://0.0.0.0:29092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092, CONTROLLER://kafka:29092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT, CONTROLLER:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: CONTROLLER
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-volumes:
-  postgres_data:
+networks:
+  backend-net:
+    external: true
