@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: user-service-n
   kafka:
     bootstrap-servers: localhost:9092
     producer:
@@ -12,7 +14,7 @@ spring:
       properties:
         spring.json.trusted.packages: "*"
   datasource:
-    url: jdbc:postgresql://localhost:5432/user_db?currentSchema=us
+    url: jdbc:postgresql://localhost:5432/common_db?currentSchema=us
     username: user_admin
     password: password
     driver-class-name: org.postgresql.Driver

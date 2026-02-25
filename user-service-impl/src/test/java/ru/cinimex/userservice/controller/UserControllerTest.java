@@ -110,7 +110,6 @@ class UserControllerTest {
         }
     }
 
-    // --- 2. GET /users/{login} ---
     @Nested
     @DisplayName("GET /admin/users/{login}")
     class GetUserByLoginTests {

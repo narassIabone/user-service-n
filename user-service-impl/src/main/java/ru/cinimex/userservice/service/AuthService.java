@@ -70,7 +70,7 @@ public class AuthService {
         throw new RuntimeException("Ошибка при регистрации: транзакция не вернула результат");
     }
 
-    // Вспомогательный record (или внутренний класс), чтобы передать данные из транзакции в Kafka
+    // Вспомогательный record, чтобы передать данные из транзакции в Kafka
     private record RegistrationContext(UUID userId, String email, String code) {}
 
     @Transactional

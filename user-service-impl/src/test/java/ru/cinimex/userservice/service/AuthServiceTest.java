@@ -84,7 +84,7 @@ class AuthServiceTest {
             assertThat(resultId).isEqualTo(userId);
             verify(userRepository).save(userEntity);
             verify(tempCodeRepository).save(any(TempCodeEntity.class));
-            // verify(kafkaTemplate).send(eq("notification.message.in"), any());
+            verify(kafkaTemplate).send(eq("notification.message.in"), any());
         }
 
         @Test

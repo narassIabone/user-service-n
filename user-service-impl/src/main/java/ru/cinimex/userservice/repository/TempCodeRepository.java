@@ -7,5 +7,4 @@ import java.util.UUID;
 
 public interface TempCodeRepository extends JpaRepository<TempCodeEntity, UUID> {
     Optional<TempCodeEntity> findByUserId(UUID userId);
-    void deleteByUserId(UUID userId);
 }

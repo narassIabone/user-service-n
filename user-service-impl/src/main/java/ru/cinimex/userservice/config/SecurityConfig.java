@@ -53,9 +53,6 @@ public class SecurityConfig {
                                 "/register",
                                 "/register/code",
                                 "/auth/login").permitAll()
-//                        .requestMatchers("/users/current").hasAnyAuthority("USER", "ADMIN")
-//                        .requestMatchers("/admin/users/**").hasAnyAuthority("ADMIN", "TECH")
-//                        .requestMatchers("/admin/tech/token").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception
