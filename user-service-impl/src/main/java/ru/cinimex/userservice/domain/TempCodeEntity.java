@@ -11,7 +11,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "temp_code")
+@Table(name = "temp_code", schema = "us")
 public class TempCodeEntity {
 
     @Id

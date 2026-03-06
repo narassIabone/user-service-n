@@ -22,7 +22,9 @@ services:
       - backend-net
 
   db-migrator:
-    image: user-service-db
+    build:
+      context: ../user-service-db
+      dockerfile: Dockerfile
     container_name: user-service-migrator
     environment:
       - DB_URL=jdbc:postgresql://postgres:5432/common_db
