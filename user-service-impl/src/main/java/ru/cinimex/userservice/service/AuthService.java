@@ -2,6 +2,7 @@ package ru.cinimex.userservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +28,9 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+
+    @Value("${app.kafka.topic.registration:notification.message.in}")
+    private String registrationTopicName;
 
     private final UserRepository userRepository;
     private final TempCodeRepository tempCodeRepository;
@@ -63,7 +67,7 @@ public class AuthService {
                     .body("Ваш код подтверждения - " + result.code())
                     .build();
 
-            kafkaTemplate.send("notification.message.in", notification);
+            kafkaTemplate.send(registrationTopicName, notification);
             return result.userId();
         }
 
